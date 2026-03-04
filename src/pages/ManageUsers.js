@@ -89,6 +89,7 @@ function ManageUsers() {
   };
 
   // Filter the User List
+  console.log(nusers);
   const superadmin_list = users.data.superadmin || [];
   const admin_list = users.data.admins || [];
   const organizer_list = users.data.organizers || [];
@@ -106,8 +107,6 @@ function ManageUsers() {
     (user) =>
       user.role === 'organizer' && user.admin_id === currentUser.data.user_id
   );
-  console.log();
-  
 
   const filteredUsers =
     currentUser.data.role === 'admin' ? adminOrganizers : filteredUsers1;

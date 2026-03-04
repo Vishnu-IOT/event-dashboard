@@ -5,8 +5,6 @@ import '../styles/eventForm.css';
 function EventForm({ event, onSaved }) {
     const { addEvent, updateEvent } = useAuth();
     const isEditing = !!event;
- console.log(isEditing);
- 
 
     const [formData, setFormData] = useState({
         eventName: '',
