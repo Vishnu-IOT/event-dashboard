@@ -133,7 +133,7 @@ function Login() {
                         </form>
 
                         <div className="login-footer">
-                            <p>Default Super Admin: <strong>superadmin</strong> / <strong>super123</strong></p>
+                            {/* <p>Default Super Admin: <strong>superadmin</strong> / <strong>super123</strong></p> */}
                             <div className="switch-login">
                                 <button type="button" onClick={toggleFlip}>
                                     Switch to Organizer Login ⤻
