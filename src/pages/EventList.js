@@ -165,6 +165,22 @@ function EventList({ onEdit }) {
                     </svg>
                     <span>{event.type}</span>
                   </div>
+                  {event.type === 'Limited' && (
+                    <div className="event-detail">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <rect x="3" y="3" width="7" height="7" />
+                        <rect x="14" y="3" width="7" height="7" />
+                        <rect x="14" y="14" width="7" height="7" />
+                        <rect x="3" y="14" width="7" height="7" />
+                      </svg>
+                      <span>{event.slot}</span>
+                    </div>
+                  )}
                 </div>
                 <div className="event-meta">
                   <span className="created-by">

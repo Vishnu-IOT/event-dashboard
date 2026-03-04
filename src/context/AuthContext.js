@@ -37,8 +37,10 @@ export function AuthProvider({ children }) {
         const token = sessionStorage.getItem('token');
         if (!token) return;
         try {
-          const usersData = await fetchUsersAPI();
-          setUsers(usersData);
+            if(currentUser.data.role !== 'organizer'){
+                const usersData = await fetchUsersAPI();
+                setUsers(usersData);
+            }
           const eventsData = await fetchEventsAPI();
           setEvents(eventsData);
         } catch (err) {
