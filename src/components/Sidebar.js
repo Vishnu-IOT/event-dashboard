@@ -56,10 +56,12 @@ function Sidebar({ activePage, onNavigate }) {
         <aside className="sidebar">
             <div className="sidebar-logo">
                 <div className="logo-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    {/* <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path d="M19 21V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v16m14 0H5m14 0h2m-16 0H3" />
                         <path d="M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 4v4h4v-4" />
-                    </svg>
+                    </svg> */} 
+                    {/* Add the background Color in CSS while uncommenting SVG */}
+                    <img src='/favicon.ico' alt='MyKonnect'/> 
                 </div>
                 <span className="logo-text">MyKonnect</span>
             </div>
