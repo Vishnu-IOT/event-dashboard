@@ -7,13 +7,10 @@ function EventList({ onEdit }) {
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [nevents, setnevents] = useState();
 
-  useEffect(() => {
-  fetchEventsAPIs();
-}, []);
-
   const token = sessionStorage.getItem('token');
 
-  async function fetchEventsAPIs() {
+  useEffect(() =>{
+    const fetchEventsAPIs = async () => {
     try {
       const response = await fetch(`https://events.mpdatahub.com/api/events`, {
         method: 'GET',
@@ -24,12 +21,14 @@ function EventList({ onEdit }) {
       });
       const data = await response.json();
       setnevents(data);
-      return data; // Expected: array of event objects
+      return data;
     } catch (error) {
       console.error('fetchEventsAPI error:', error.message);
       return [];
     }
   }
+  fetchEventsAPIs();
+}, []);
 
   const handleDelete = (eventId) => {
     deleteEvent(eventId);

@@ -6,7 +6,7 @@ import React, { createContext, useContext, useState, useCallback, useEffect } fr
 import {
   loginOrgAPI,
   loginAdminAPI,
-  logoutAPI,
+//   logoutAPI,
   fetchUsersAPI,
   createUserAPI,
   createAdminUserAPI,
@@ -138,7 +138,7 @@ export function AuthProvider({ children }) {
             }
             return null;
         },
-        [currentUser]
+        []
     );
 
     // ========================================================================
