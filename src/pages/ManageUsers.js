@@ -5,11 +5,11 @@ import '../styles/manageUsers.css';
 function ManageUsers() {
   const { currentUser, users, addUser, deleteUser } = useAuth();
   const [nusers, setnusers] = useState(null);
-  const token = sessionStorage.getItem('token');
 
   useEffect(() => {
     const fetchUsersAPIs = async () => {
       try {
+        const token = sessionStorage.getItem('token');
         const response = await fetch(
           `https://events.mpdatahub.com/api/super-admin/dashboard`,
           {
@@ -29,7 +29,7 @@ function ManageUsers() {
       }
     };
     fetchUsersAPIs();
-  }, [token]);
+  }, []);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -90,9 +90,9 @@ function ManageUsers() {
 
   // Filter the User List
   console.log(nusers);
-  const superadmin_list = users.data.superadmin || [];
-  const admin_list = users.data.admins || [];
-  const organizer_list = users.data.organizers || [];
+  const superadmin_list = users?.data?.superadmin || [];
+  const admin_list = users?.data?.admins || [];
+  const organizer_list = users?.data?.organizers || [];
 
   const filteredUsers1 = [
     {

@@ -15,13 +15,14 @@
 // ============================================================================
 
 const BASE_URL = 'https://events.mpdatahub.com/api'; // <-- Change this to your backend URL
-const token = sessionStorage.getItem('token'); // <-- This the token for current user
+
 
 
 // ──────────────────────────────────────────────
 // Helper: Get auth headers with token
 // ──────────────────────────────────────────────
 function getAuthHeaders() {
+  const token = sessionStorage.getItem('token'); // <-- This the token for current user
   return {
     'Content-Type': 'application/json',
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -58,10 +59,6 @@ export async function loginAdminAPI(email, password) {
       body: JSON.stringify({ email, password }),
     });
     const data = await handleResponse(response);
-    // Store token for future authenticated requests
-    if (data.data.token) {
-      sessionStorage.setItem('token', data.data.token);
-    }
     return { success: true, user: data, token: data.data.token };
   } catch (error) {
     return { success: false, message: error.message };
@@ -78,9 +75,7 @@ export async function loginOrgAPI(email, password) {
     });
     const data = await handleResponse(response);
     // Store token for future authenticated requests
-    if (data.data.token) {
-      sessionStorage.setItem('token', data.data.token);
-    }
+    
     return { success: true, user: data, token: data.data.token };
   } catch (error) {
     return { success: false, message: error.message };
@@ -213,6 +208,7 @@ export async function fetchEventsAPI() {
  */
 export async function createEventAPI(eventData) {
   try {
+    const token = sessionStorage.getItem('token'); // <-- This the token for current user
     const response = await fetch(`${BASE_URL}/create-event`, {
       method: 'POST',
       headers: {
