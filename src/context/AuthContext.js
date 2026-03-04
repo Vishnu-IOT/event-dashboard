@@ -59,10 +59,6 @@ export function AuthProvider({ children }) {
         if (result.success) {
             setCurrentUser(result.user);
             sessionStorage.setItem('dashboard_currentUser', JSON.stringify(result.user));
-            // Store token for future authenticated requests
-        if (result.data.token) {
-            sessionStorage.setItem('token', result.data.token);
-        }
         }
         return result;
     }, []);
@@ -75,10 +71,6 @@ export function AuthProvider({ children }) {
         if (result.success) {
             setCurrentUser(result.user);
             sessionStorage.setItem('dashboard_currentUser', JSON.stringify(result.user));
-            // Store token for future authenticated requests
-        if (result.data.token) {
-            sessionStorage.setItem('token', result.data.token);
-        }
         }
         return result;
     }, []);

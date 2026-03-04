@@ -59,6 +59,10 @@ export async function loginAdminAPI(email, password) {
       body: JSON.stringify({ email, password }),
     });
     const data = await handleResponse(response);
+    // Store token for future authenticated requests
+        if (data.data.token) {
+            sessionStorage.setItem('token', data.data.token);
+        }
     return { success: true, user: data, token: data.data.token };
   } catch (error) {
     return { success: false, message: error.message };
@@ -75,7 +79,9 @@ export async function loginOrgAPI(email, password) {
     });
     const data = await handleResponse(response);
     // Store token for future authenticated requests
-    
+        if (data.data.token) {
+            sessionStorage.setItem('token', data.data.token);
+        }
     return { success: true, user: data, token: data.data.token };
   } catch (error) {
     return { success: false, message: error.message };
