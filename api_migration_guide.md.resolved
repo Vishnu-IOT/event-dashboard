@@ -1,0 +1,173 @@
+# API Migration Guide — Event Dashboard
+
+This document maps **every static localStorage operation** to the API endpoint it should be replaced with. Only **2 files** need changes: [initialData.js](file:///e:/React%20JS/event-dashboard/src/data/initialData.js) (replace entirely) and [AuthContext.js](file:///e:/React%20JS/event-dashboard/src/context/AuthContext.js) (make functions async).
+
+---
+
+## Required API Endpoints
+
+| # | Method | Endpoint | Purpose | Request Body | Response |
+|---|--------|----------|---------|-------------|----------|
+| 1 | `POST` | `/api/auth/login` | User login | `{ username, password }` | `{ success, user, token }` |
+| 2 | `POST` | `/api/auth/logout` | User logout | — | `{ success }` |
+| 3 | `GET` | `/api/users` | Get all users | — | `[ { id, name, username, role, createdAt } ]` |
+| 4 | `POST` | `/api/users` | Register new user | `{ name, username, password, role }` | `{ success, user }` |
+| 5 | `DELETE` | `/api/users/:id` | Delete user | — | `{ success }` |
+| 6 | `GET` | `/api/events` | Get events (filtered by role on backend) | — | `[ { id, eventName, banner1, ... } ]` |
+| 7 | `POST` | `/api/events` | Create event | `{ eventName, banner1, banner2, venue, contact, collegeName }` | `{ success, event }` |
+| 8 | `PUT` | `/api/events/:id` | Update event | `{ eventName, banner1, banner2, venue, contact, collegeName }` | `{ success, event }` |
+| 9 | `DELETE` | `/api/events/:id` | Delete event | — | `{ success }` |
+
+---
+
+## File 1: [initialData.js](file:///e:/React%20JS/event-dashboard/src/data/initialData.js) → Replace with `api.js`
+
+**Replace this entire file** with an API helper module. Every function currently reads/writes localStorage — each becomes a `fetch()` call instead.
+
+| Current Static Function | Line # | What It Does Now | Replace With |
+|------------------------|--------|-----------------|-------------|
+| [getUsers()](file:///e:/React%20JS/event-dashboard/src/data/initialData.js#15-23) | L15–22 | Reads `localStorage('dashboard_users')` | `GET /api/users` |
+| [saveUsers(users)](file:///e:/React%20JS/event-dashboard/src/data/initialData.js#24-27) | L24–26 | Writes full array to localStorage | ❌ Remove — individual endpoints handle this |
+| [getEvents()](file:///e:/React%20JS/event-dashboard/src/data/initialData.js#28-36) | L28–35 | Reads `localStorage('dashboard_events')` | `GET /api/events` |
+| [saveEvents(events)](file:///e:/React%20JS/event-dashboard/src/data/initialData.js#37-40) | L37–39 | Writes full array to localStorage | ❌ Remove — individual endpoints handle this |
+
+### New `api.js` structure:
+
+```
+const BASE_URL = 'http://your-backend-url/api';
+
+// Helper to get auth token from sessionStorage
+getHeaders()        → returns { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+
+// Auth
+loginAPI(username, password)   → POST /api/auth/login
+logoutAPI()                    → POST /api/auth/logout
+
+// Users
+fetchUsers()                   → GET  /api/users
+createUser(userData)           → POST /api/users
+deleteUserAPI(userId)          → DELETE /api/users/:id
+
+// Events
+fetchEvents()                  → GET    /api/events
+createEventAPI(eventData)      → POST   /api/events
+updateEventAPI(eventId, data)  → PUT    /api/events/:id
+deleteEventAPI(eventId)        → DELETE /api/events/:id
+```
+
+---
+
+## File 2: [AuthContext.js](file:///e:/React%20JS/event-dashboard/src/context/AuthContext.js) — Make Functions Async
+
+Every function in this file currently calls [getUsers()](file:///e:/React%20JS/event-dashboard/src/data/initialData.js#15-23)/[saveUsers()](file:///e:/React%20JS/event-dashboard/src/data/initialData.js#24-27)/[getEvents()](file:///e:/React%20JS/event-dashboard/src/data/initialData.js#28-36)/[saveEvents()](file:///e:/React%20JS/event-dashboard/src/data/initialData.js#37-40) synchronously. Each needs to become `async` and call the new API functions instead.
+
+### Change 1: `login` (Lines 15–26)
+
+| Current (Static) | Replace With (API) |
+|---|---|
+| [getUsers()](file:///e:/React%20JS/event-dashboard/src/data/initialData.js#15-23) then `.find()` to match credentials locally | `await loginAPI(username, password)` — backend validates credentials |
+| `sessionStorage.setItem('dashboard_currentUser', ...)` | Store the returned `token` in sessionStorage instead |
+| Returns `{ success, user }` synchronously | Returns `{ success, user, token }` from API response |
+
+### Change 2: `logout` (Lines 28–31)
+
+| Current (Static) | Replace With (API) |
+|---|---|
+| `sessionStorage.removeItem('dashboard_currentUser')` | `await logoutAPI()` then clear sessionStorage (both `token` and `currentUser`) |
+
+### Change 3: `addUser` (Lines 33–48)
+
+| Current (Static) | Replace With (API) |
+|---|---|
+| [getUsers()](file:///e:/React%20JS/event-dashboard/src/data/initialData.js#15-23) → checks duplicate → pushes to array → [saveUsers()](file:///e:/React%20JS/event-dashboard/src/data/initialData.js#24-27) | `await createUser(userData)` — backend handles duplicate check and ID generation |
+| Generates `id: 'user_' + Date.now()` client-side | ❌ Remove — backend generates the ID |
+| Calls `setUsers(updated)` with full array | Call `await fetchUsers()` after creation to refresh list, or append the returned user |
+
+### Change 4: `deleteUser` (Lines 50–55)
+
+| Current (Static) | Replace With (API) |
+|---|---|
+| [getUsers()](file:///e:/React%20JS/event-dashboard/src/data/initialData.js#15-23) → `.filter()` → [saveUsers()](file:///e:/React%20JS/event-dashboard/src/data/initialData.js#24-27) | `await deleteUserAPI(userId)` |
+| `setUsers(updated)` with filtered array | Call `await fetchUsers()` to refresh, or filter locally |
+
+### Change 5: `addEvent` (Lines 57–74)
+
+| Current (Static) | Replace With (API) |
+|---|---|
+| [getEvents()](file:///e:/React%20JS/event-dashboard/src/data/initialData.js#28-36) → constructs object → pushes → [saveEvents()](file:///e:/React%20JS/event-dashboard/src/data/initialData.js#37-40) | `await createEventAPI(eventData)` — backend adds `createdBy`, `createdAt` |
+| Sets `createdBy`, `createdByName`, `createdByRole` client-side | ❌ Remove — backend reads these from the auth token |
+| Generates `id: 'event_' + Date.now()` client-side | ❌ Remove — backend generates the ID |
+
+### Change 6: `updateEvent` (Lines 76–83)
+
+| Current (Static) | Replace With (API) |
+|---|---|
+| [getEvents()](file:///e:/React%20JS/event-dashboard/src/data/initialData.js#28-36) → `.map()` to replace → [saveEvents()](file:///e:/React%20JS/event-dashboard/src/data/initialData.js#37-40) | `await updateEventAPI(eventId, eventData)` |
+| Sets `updatedAt` client-side | ❌ Remove — backend sets timestamp |
+
+### Change 7: `deleteEvent` (Lines 85–90)
+
+| Current (Static) | Replace With (API) |
+|---|---|
+| [getEvents()](file:///e:/React%20JS/event-dashboard/src/data/initialData.js#28-36) → `.filter()` → [saveEvents()](file:///e:/React%20JS/event-dashboard/src/data/initialData.js#37-40) | `await deleteEventAPI(eventId)` |
+
+### Change 8: `getVisibleEvents` (Lines 92–99)
+
+| Current (Static) | Replace With (API) |
+|---|---|
+| Filters events client-side based on `currentUser.role` | Backend should handle filtering — `GET /api/events` returns only permitted events based on the auth token's role |
+
+### Change 9: Initial State Loaders (Lines 7–13)
+
+| Current (Static) | Replace With (API) |
+|---|---|
+| `useState(() => getUsers())` on Line 12 | Use `useEffect` to `await fetchUsers()` on mount |
+| `useState(() => getEvents())` on Line 13 | Use `useEffect` to `await fetchEvents()` on mount |
+| `sessionStorage.getItem('dashboard_currentUser')` on Lines 7–10 | Keep this for session persistence, but also validate token with backend on mount |
+
+---
+
+## Additional Changes in Page Components
+
+> [!NOTE]
+> These pages **don't need logic changes** — they already use [useAuth()](file:///e:/React%20JS/event-dashboard/src/context/AuthContext.js#118-125) hooks. Once [AuthContext.js](file:///e:/React%20JS/event-dashboard/src/context/AuthContext.js) functions become async, you only need to add `await` and loading states where these functions are called.
+
+| File | What Calls AuthContext | What to Add |
+|---|---|---|
+| [Login.js](file:///e:/React%20JS/event-dashboard/src/pages/Login.js) L18–24 | `login(username, password)` | Add `await` — already has a loading spinner ✅ |
+| [EventForm.js](file:///e:/React%20JS/event-dashboard/src/pages/EventForm.js) L50–70 | `addEvent()` / `updateEvent()` | Add `await` + loading state |
+| [EventList.js](file:///e:/React%20JS/event-dashboard/src/pages/EventList.js) L12 | `deleteEvent(eventId)` | Add `await` + loading state |
+| [ManageUsers.js](file:///e:/React%20JS/event-dashboard/src/pages/ManageUsers.js) L35–47 | `addUser()` / `deleteUser()` | Add `await` + loading state |
+
+---
+
+## Auth Token Flow
+
+```mermaid
+sequenceDiagram
+    participant Browser
+    participant API
+
+    Browser->>API: POST /api/auth/login {username, password}
+    API-->>Browser: { success, user, token }
+    Note over Browser: Store token in sessionStorage
+
+    Browser->>API: GET /api/events (Header: Authorization: Bearer token)
+    API-->>Browser: [events filtered by role]
+
+    Browser->>API: POST /api/events (Header: Authorization: Bearer token)
+    API-->>Browser: { success, event }
+```
+
+---
+
+## Summary: Files to Change
+
+| File | Change Type | Effort |
+|------|------------|--------|
+| [src/data/initialData.js](file:///e:/React%20JS/event-dashboard/src/data/initialData.js) | **Replace entirely** with `src/api/api.js` | 🔴 Full rewrite |
+| [src/context/AuthContext.js](file:///e:/React%20JS/event-dashboard/src/context/AuthContext.js) | Make 7 functions async, replace localStorage calls with API calls, add `useEffect` for data loading | 🔴 Major changes |
+| [src/pages/Login.js](file:///e:/React%20JS/event-dashboard/src/pages/Login.js) | Add `await` to `login()` call | 🟢 Minimal |
+| [src/pages/EventForm.js](file:///e:/React%20JS/event-dashboard/src/pages/EventForm.js) | Add `await` to `addEvent()`/`updateEvent()` | 🟢 Minimal |
+| [src/pages/EventList.js](file:///e:/React%20JS/event-dashboard/src/pages/EventList.js) | Add `await` to `deleteEvent()` | 🟢 Minimal |
+| [src/pages/ManageUsers.js](file:///e:/React%20JS/event-dashboard/src/pages/ManageUsers.js) | Add `await` to `addUser()`/`deleteUser()` | 🟢 Minimal |
