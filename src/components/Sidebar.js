@@ -61,7 +61,7 @@ function Sidebar({ activePage, onNavigate }) {
                         <path d="M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 4v4h4v-4" />
                     </svg>
                 </div>
-                <span className="logo-text">EventHub</span>
+                <span className="logo-text">MyKonnect</span>
             </div>
 
             <nav className="sidebar-nav">
