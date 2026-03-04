@@ -4,30 +4,32 @@ import '../styles/manageUsers.css';
 
 function ManageUsers() {
   const { currentUser, users, addUser, deleteUser } = useAuth();
-  const [nusers, setnusers] = useState();
-
-  useEffect(() => {
-  setnusers(fetchUsersAPIs());
-}, [addUser]);
-
+  const [nusers, setnusers] = useState(null);
   const token = sessionStorage.getItem('token');
 
-  async function fetchUsersAPIs() {
-    try {
-      const response = await fetch(`https://events.mpdatahub.com/api/super-admin/dashboard`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-      });
-      const data = await response.json();
-      return data; // Expected: array of event objects
-    } catch (error) {
-      console.error('fetchUsersAPI error:', error.message);
-      return [];
-    }
-  }
+  useEffect(() => {
+    const fetchUsersAPIs = async () => {
+      try {
+        const response = await fetch(
+          `https://events.mpdatahub.com/api/super-admin/dashboard`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            },
+          }
+        );
+        const data = await response.json();
+        setnusers(data);
+        return data; // Expected: array of event objects
+      } catch (error) {
+        console.error('fetchUsersAPI error:', error.message);
+        return [];
+      }
+    };
+    fetchUsersAPIs();
+  }, [token]);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -91,7 +93,7 @@ function ManageUsers() {
   console.log(users);
   console.log(nusers);
   const superadmin_list = users.data.superadmin || [];
-  const admin_list = users.data.admins || [] ;
+  const admin_list = users.data.admins || [];
   const organizer_list = users.data.organizers || [];
 
   const filteredUsers1 = [
@@ -106,14 +108,14 @@ function ManageUsers() {
   console.log(filteredUsers1);
 
   const adminOrganizers = filteredUsers1.filter(
-  (user) =>
-    user.role === "organizer" &&
-    user.admin_id === currentUser.data.user_id
-);
+    (user) =>
+      user.role === 'organizer' && user.admin_id === currentUser.data.user_id
+  );
 
-console.log(adminOrganizers);
+  console.log(adminOrganizers);
 
-const filteredUsers = (currentUser.data.role === 'admin' ? adminOrganizers : filteredUsers1);
+  const filteredUsers =
+    currentUser.data.role === 'admin' ? adminOrganizers : filteredUsers1;
 
   const getRoleLabel = (role) => {
     switch (role) {
@@ -345,14 +347,12 @@ const filteredUsers = (currentUser.data.role === 'admin' ? adminOrganizers : fil
                           <code>{user.email}</code>
                         </td>
                         <td>
-                          <span
-                            className={`role-tag role-${user.role}`}
-                          >
+                          <span className={`role-tag role-${user.role}`}>
                             {getRoleLabel(user.role)}
                           </span>
                         </td>
                         <td>
-                          {(user.role !== 'superadmin') && (
+                          {user.role !== 'superadmin' && (
                             <>
                               {deleteConfirm === user.id ? (
                                 <div className="confirm-delete">

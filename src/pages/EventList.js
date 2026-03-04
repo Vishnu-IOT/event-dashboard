@@ -9,26 +9,29 @@ function EventList({ onEdit }) {
 
   const token = sessionStorage.getItem('token');
 
-  useEffect(() =>{
+  useEffect(() => {
     const fetchEventsAPIs = async () => {
-    try {
-      const response = await fetch(`https://events.mpdatahub.com/api/events`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-      });
-      const data = await response.json();
-      setnevents(data);
-      return data;
-    } catch (error) {
-      console.error('fetchEventsAPI error:', error.message);
-      return [];
-    }
-  }
-  fetchEventsAPIs();
-}, []);
+      try {
+        const response = await fetch(
+          `https://events.mpdatahub.com/api/events`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            },
+          }
+        );
+        const data = await response.json();
+        setnevents(data);
+        return data;
+      } catch (error) {
+        console.error('fetchEventsAPI error:', error.message);
+        return [];
+      }
+    };
+    fetchEventsAPIs();
+  }, [token]);
 
   const handleDelete = (eventId) => {
     deleteEvent(eventId);
@@ -46,13 +49,13 @@ function EventList({ onEdit }) {
   };
 
   const canDownloadImage = async (url, fileName) => {
-   const link = document.createElement("a");
+    const link = document.createElement('a');
     link.href = url;
     link.download = fileName;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-};
+  };
 
   return (
     <div className="event-list-page">
@@ -178,19 +181,24 @@ function EventList({ onEdit }) {
                         : 'Organizer'}
                   </span>
                 </div>
-                <button className="btn-edit" onClick={() => canDownloadImage(event.qr_code , `${event.title}.pdf`)}>
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                    </svg>
-                    Download Banner
-                  </button>
-                  {/* <a href={event.qr_code} download alt =''>Download Banner</a> */}
+                <button
+                  className="btn-edit"
+                  onClick={() =>
+                    canDownloadImage(event.qr_code, `${event.title}.pdf`)
+                  }
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                  </svg>
+                  Download Banner
+                </button>
+                {/* <a href={event.qr_code} download alt =''>Download Banner</a> */}
               </div>
               {canEditDelete(event) && (
                 <div className="event-actions">
@@ -214,7 +222,7 @@ function EventList({ onEdit }) {
                         onClick={() => handleDelete(event.id)}
                       >
                         Yes
-                      </button> 
+                      </button>
                       <button
                         className="btn-no"
                         onClick={() => setDeleteConfirm(null)}
