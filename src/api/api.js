@@ -16,7 +16,6 @@
 
 const BASE_URL = 'https://events.mpdatahub.com/api'; // <-- Change this to your backend URL
 const token = sessionStorage.getItem('token'); // <-- This the token for current user
-console.log(token);
 
 
 // ──────────────────────────────────────────────
@@ -198,7 +197,6 @@ export async function fetchEventsAPI() {
       headers: getAuthHeaders(),
     });
     const data = await handleResponse(response);
-    console.log(data);
     return data; // Expected: array of event objects
   } catch (error) {
     console.error('fetchEventsAPI error:', error.message);

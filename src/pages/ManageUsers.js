@@ -53,7 +53,6 @@ function ManageUsers() {
     e.preventDefault();
     setError('');
     setSuccess('');
-    console.log(formData);
 
     // if (!formData.name.trim() || !formData.username.trim() || !formData.password.trim()) {
     //     if (!formData.name || !formData.username || !formData.password) {
@@ -89,9 +88,7 @@ function ManageUsers() {
     setDeleteConfirm(null);
   };
 
-  // const filteredUsers = users.filter((u) => u.id !== currentUser.data.user_id);
-  console.log(users);
-  console.log(nusers);
+  // Filter the User List
   const superadmin_list = users.data.superadmin || [];
   const admin_list = users.data.admins || [];
   const organizer_list = users.data.organizers || [];
@@ -105,14 +102,12 @@ function ManageUsers() {
     ...organizer_list,
   ];
 
-  console.log(filteredUsers1);
-
   const adminOrganizers = filteredUsers1.filter(
     (user) =>
       user.role === 'organizer' && user.admin_id === currentUser.data.user_id
   );
-
-  console.log(adminOrganizers);
+  console.log();
+  
 
   const filteredUsers =
     currentUser.data.role === 'admin' ? adminOrganizers : filteredUsers1;

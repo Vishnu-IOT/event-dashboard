@@ -101,7 +101,6 @@ export function AuthProvider({ children }) {
         if (result.success) {
             // Refresh user list from API
             const updatedUsers = await fetchUsersAPI();
-            console.log(updatedUsers);
             setUsers(updatedUsers);
         }
         return result;
@@ -128,7 +127,6 @@ export function AuthProvider({ children }) {
         async (eventData) => {
 
             // ── API VERSION (uncomment below, comment out LOCAL VERSION above) ──
-            console.log(eventData);
             const result = await createEventAPI(eventData);
             if (result.success) {
                 // Refresh events list from API
