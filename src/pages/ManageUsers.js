@@ -270,7 +270,9 @@ function ManageUsers() {
                   {currentUser.data.role === 'superadmin' && (
                     <option value="admin">Admin</option>
                   )}
+                   {currentUser.data.role === 'admin' && (
                   <option value="organizer">Event Organizer</option>
+                  )}
                 </select>
               </div>
 

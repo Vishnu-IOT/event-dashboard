@@ -134,10 +134,85 @@
     box-shadow: 0 4px 15px rgba(92, 124, 250, 0.3);
 }
 
+/* Subevent Styles */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.section-header h3 {
+    margin-bottom: 0;
+    padding-bottom: 5px;
+}
+
+.subevent-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 16px;
+    align-items: end;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px dashed var(--gray-200);
+}
+
+.subevent-row .form-group {
+    margin-bottom: 0;
+}
+
+.btn-add-subevent {
+    background: transparent;
+    color: var(--primary-600);
+    border: 1px dashed var(--primary-600);
+    padding: 6px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-add-subevent:hover {
+    background: var(--primary-50);
+}
+
+.btn-remove-subevent {
+    height: 44px;
+    /* match input height */
+    width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    color: var(--danger);
+    border: 1px solid var(--danger);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-remove-subevent:hover {
+    background: var(--danger-light);
+}
+
+.btn-remove-subevent svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Responsive */
 /* Responsive */
 @media (max-width: 640px) {
-    .form-row {
+
+    .form-row,
+    .subevent-row {
         grid-template-columns: 1fr;
+    }
+
+    .subevent-row .btn-remove-subevent {
+        width: 100%;
+        margin-top: 8px;
     }
 
     .form-section {
