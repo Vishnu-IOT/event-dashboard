@@ -93,6 +93,7 @@ function ManageUsers() {
   const superadmin_list = users?.data?.superadmin || [];
   const admin_list = users?.data?.admins || [];
   const organizer_list = users?.data?.organizers || [];
+  const admins_organizer_list = users?.data?.admin?.organizers || [];
 
   const filteredUsers1 = [
     {
@@ -103,13 +104,13 @@ function ManageUsers() {
     ...organizer_list,
   ];
 
-  const adminOrganizers = filteredUsers1.filter(
-    (user) =>
-      user.role === 'organizer' && user.admin_id === currentUser.data.user_id
-  );
+  // const adminOrganizers = filteredUsers1.filter(
+  //   (user) =>
+  //     user.role === 'organizer' && user.admin_id === currentUser.data.user_id
+  // );
 
   const filteredUsers =
-    currentUser.data.role === 'admin' ? adminOrganizers : filteredUsers1;
+    currentUser.data.role === 'admin' ? admins_organizer_list : filteredUsers1;
 
   const getRoleLabel = (role) => {
     switch (role) {

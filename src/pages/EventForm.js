@@ -103,7 +103,7 @@ function EventForm({ event, onSaved }) {
         newformData.append('subevents', JSON.stringify(formData.subevents));
 
         if (isEditing) {
-            updateEvent(event.id, formData);
+            updateEvent(event.id, newformData);
             setSuccess('Event updated successfully!');
         } else {
             // for (let pair of newformData.entries()) {
