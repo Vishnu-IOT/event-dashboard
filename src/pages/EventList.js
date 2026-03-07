@@ -7,8 +7,7 @@ function EventList({ onEdit }) {
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [nevents, setnevents] = useState();
 
-  useEffect(() => {
-    const fetchEventsAPIs = async () => {
+  const fetchEventsAPIs = async () => {
       try {
         const token = sessionStorage.getItem('token');
         const response = await fetch(
@@ -29,12 +28,15 @@ function EventList({ onEdit }) {
         return [];
       }
     };
+
+  useEffect(() => {
     fetchEventsAPIs();
   }, []);
 
   const handleDelete = (eventId) => {
     deleteEvent(eventId);
     setDeleteConfirm(null);
+    fetchEventsAPIs();
   };
 
   const canEditDelete = (event) => {
