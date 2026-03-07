@@ -184,14 +184,14 @@ function EventList({ onEdit }) {
                 </div>
                 <div className="event-meta">
                   <span className="created-by">
-                    By: <strong>{event.organizer.name}</strong>
+                    By: <strong>{event.organizer_details.name}</strong>
                   </span>
                   <span
-                    className={`role-tag role-${event.organizer.role || 'organizer'}`}
+                    className={`role-tag role-${event.organizer_details.role || 'organizer'}`}
                   >
-                    {event.organizer.role === 'superadmin'
+                    {event.organizer_details.role === 'superadmin'
                       ? 'Super Admin'
-                      : event.organizer.role === 'admin'
+                      : event.organizer_details.role === 'admin'
                         ? 'Admin'
                         : 'Organizer'}
                   </span>
