@@ -39,7 +39,7 @@ function EventList({ onEdit }) {
 
   const canEditDelete = (event) => {
     if (
-      currentUser.data.role === 'superadmin' ||
+      currentUser.data.role === 'organizer' ||
       currentUser.data.role === 'admin'
     ) {
       return true;
@@ -184,14 +184,14 @@ function EventList({ onEdit }) {
                 </div>
                 <div className="event-meta">
                   <span className="created-by">
-                    By: <strong>{event.organizer_details.name}</strong>
+                    By: <strong>{event.organizer.name}</strong>
                   </span>
                   <span
-                    className={`role-tag role-${event.organizer_details.role || 'organizer'}`}
+                    className={`role-tag role-${event.organizer.role || 'organizer'}`}
                   >
-                    {event.organizer_details.role === 'superadmin'
+                    {event.organizer.role === 'superadmin'
                       ? 'Super Admin'
-                      : event.organizer_details.role === 'admin'
+                      : event.organizer.role === 'admin'
                         ? 'Admin'
                         : 'Organizer'}
                   </span>
@@ -213,7 +213,6 @@ function EventList({ onEdit }) {
                   </svg>
                   Download Banner
                 </button>
-                {/* <a href={event.qr_code} download alt =''>Download Banner</a> */}
               </div>
               {canEditDelete(event) && (
                 <div className="event-actions">
