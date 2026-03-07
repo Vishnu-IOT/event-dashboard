@@ -1,35 +1,35 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import '../styles/manageUsers.css';
 
 function ManageUsers() {
   const { currentUser, users, addUser, deleteUser } = useAuth();
-  const [nusers, setnusers] = useState(null);
+  // const [nusers, setnusers] = useState(null);
 
-  useEffect(() => {
-    const fetchUsersAPIs = async () => {
-      try {
-        const token = sessionStorage.getItem('token');
-        const response = await fetch(
-          `https://events.mpdatahub.com/api/super-admin/dashboard`,
-          {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              ...(token ? { Authorization: `Bearer ${token}` } : {}),
-            },
-          }
-        );
-        const data = await response.json();
-        setnusers(data);
-        return data; // Expected: array of event objects
-      } catch (error) {
-        console.error('fetchUsersAPI error:', error.message);
-        return [];
-      }
-    };
-    fetchUsersAPIs();
-  }, []);
+  // useEffect(() => {
+  //   const fetchUsersAPIs = async () => {
+  //     try {
+  //       const token = sessionStorage.getItem('token');
+  //       const response = await fetch(
+  //         `https://events.mpdatahub.com/api/super-admin/dashboard`,
+  //         {
+  //           method: 'GET',
+  //           headers: {
+  //             'Content-Type': 'application/json',
+  //             ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  //           },
+  //         }
+  //       );
+  //       const data = await response.json();
+  //       setnusers(data);
+  //       return data; // Expected: array of event objects
+  //     } catch (error) {
+  //       console.error('fetchUsersAPI error:', error.message);
+  //       return [];
+  //     }
+  //   };
+  //   fetchUsersAPIs();
+  // }, []);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -89,7 +89,6 @@ function ManageUsers() {
   };
 
   // Filter the User List
-  console.log(nusers);
   const superadmin_list = users?.data?.superadmin || [];
   const admin_list = users?.data?.admins || [];
   const organizer_list = users?.data?.organizers || [];
